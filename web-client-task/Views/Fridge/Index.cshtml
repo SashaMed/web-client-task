@@ -1,0 +1,43 @@
+﻿@using web_client_task.ViewModels
+@using web_client_task.ViewModels.Fridges
+@model FridgesIndexViewModel
+
+
+
+<h1>Fridges</h1>
+
+<a asp-area="" asp-controller="Fridge" asp-action="Create" class="btn btn-primary my-2">create new fridge</a>
+
+<table class="table">
+	<tr>
+		<th>
+			Fridge Name
+		</th>
+		<th>
+			Fridge Owner Name
+		</th>
+		<th>
+			Fridge Model Name
+		</th>
+		<th>
+			Fridge Model year
+		</th>
+		<th>
+			Links
+		</th>
+	</tr>
+	@foreach (var u in Model.Fridges)
+	{
+		<tr>
+			<td>@u.Name</td>
+			<td>@u.OwnerName</td>
+			<td>@u.FridgeModel.Name</td>
+			<td>@u.FridgeModel.Year</td>
+			<td>
+				<a asp-action="Delete" asp-controller="Fridge" asp-route-id="@u.Id">Delete</a> |
+				<a asp-action="Details" asp-controller="Fridge" asp-route-id="@u.Id">Details</a> 
+			</td>
+		</tr>
+
+	}
+</table>

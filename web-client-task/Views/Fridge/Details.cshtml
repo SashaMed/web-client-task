@@ -1,0 +1,105 @@
+﻿@using web_client_task.ViewModels.Fridges
+@model FridgeDetailsViewModel
+@{
+    ViewData["Title"] = "Fridge details";
+}
+
+<section class="jumbotron text-center">
+    <div class="container">
+        <h1>Fridge details</h1>
+    </div>
+</section>
+
+
+<main role="main">
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h5 class="jumbotron-heading">Fridge Name</h5>
+                <p class="lead text-muted">@Model.Fridge.Name</p>
+            </div>
+            <div class="col">
+                <h5 class="jumbotron-heading">Owner Name</h5>
+                <p class="lead text-muted">@Model.Fridge.OwnerName</p>
+            </div>
+            <div class="col">
+                <h5 class="jumbotron-heading">Fridge Model Name</h5>
+                <p class="lead text-muted">@Model.Fridge.FridgeModel.Name</p>
+            </div>
+            <div class="col">
+                <h5 class="jumbotron-heading">Fridge Model Year</h5>
+                <p class="lead text-muted">@Model.Fridge.FridgeModel.Year</p>
+            </div>
+        </div>
+
+        <p>
+
+        </p>
+    </div>
+
+    <section class="jumbotron text-center">
+        <div class="container">
+            <p>
+                <a asp-area="" asp-controller="Product" asp-action="Create" asp-route-CollectionId="@Model.Fridge.Id" class="btn btn-primary my-2">Add product</a>
+                <a asp-area="" asp-controller="Fridge" asp-action="Delete" asp-route-id="@Model.Fridge.Id" class="btn btn-danger my-2">Delete fridge</a>
+            </p>
+        </div>
+    </section>
+
+    <div class="album py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                @if (Model.Fridge.Products.Count() == 0)
+                {
+                    <div class="row">
+                        <h2>
+                            <center>No products yet<center>
+                        </h2>
+                    </div>
+                }
+                else
+                {
+                    foreach (var item in Model.Fridge.Products)
+                    {
+                        <div class="col-md-4">
+                            <div class="card mb-4 box-shadow">
+@*                                @if (item.ImagePath != null)
+                                {
+                                    <img class="card-img-top" src="@item.ImagePath" alt="Card image cap">
+                                }
+                                else
+                                {
+                                    <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="Card image cap">
+                                }*@
+                                <div class="card-body">
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <h6 class="jumbotron-heading">Product Name</h6>
+                                            <p class="card-text">@Html.DisplayFor(modelItem => item.Name)</p>
+                                        </div>
+                                        <div class="col">
+                                            <h6 class="jumbotron-heading">Default Quantity</h6>
+                                            <p class="card-text">@Html.DisplayFor(modelItem => item.DefaultQuantity)</p>
+                                        </div>
+                                    </div>
+                                    
+                                        <h6 class="jumbotron-heading">Product Description</h6>
+                                        <p class="card-text">@Html.DisplayFor(modelItem => item.Description)</p>
+                                 
+
+
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="btn-group">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+                }
+            </div>
+
+</main>
