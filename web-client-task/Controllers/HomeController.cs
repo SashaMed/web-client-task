@@ -32,13 +32,7 @@ namespace web_client_task.Controllers
         }
 
 
-        public async Task<IActionResult> Get()
-        {
-            var url = $"{Url}/api/products";
-            string result = await client.GetStringAsync(Url);
-            var products =  JsonSerializer.Deserialize<IEnumerable<ProductDto>>(result, options);
-            return View(new GetProductsViewModel { ProductDtos = products });
-        }
+
 
         public IActionResult Privacy()
         {
@@ -49,6 +43,17 @@ namespace web_client_task.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+
+        public IActionResult RequestError(int statusCode, string message)
+        {
+            var responce = new RequestErrorViewModel
+            {
+                StatusCode = statusCode,
+                ErrorMessage = message
+            };
+            return View(responce);
         }
     }
 }

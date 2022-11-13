@@ -6,5 +6,6 @@ namespace web_client_task.ViewModels.Fridges
 	public class FridgeDetailsViewModel
     {
         public FridgeDto Fridge { get; set; }
+        public PageViewModel PageViewModel { get; set; }
     }
 }

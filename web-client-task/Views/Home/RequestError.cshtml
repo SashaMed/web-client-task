@@ -1,0 +1,15 @@
+﻿@model RequestErrorViewModel
+
+@{
+	ViewData["Title"] = "Error";
+}
+
+<h1>Error during execution</h1>
+
+		<div class="col-md-4">
+			<h3 class="my-3">Status code</h3>
+			<p>@Model.StatusCode</p>
+			<h3 class="my-3">Error message</h3>
+			<p>@Model.ErrorMessage</p>
+
+			</div>
