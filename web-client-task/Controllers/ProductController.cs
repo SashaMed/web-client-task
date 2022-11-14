@@ -7,6 +7,7 @@ using web_client_task.ViewModels.Products;
 using System.Text;
 using web_client_task.Models.ResponceObjects;
 using web_client_task.ViewModels;
+using web_client_task.Interfaces;
 
 namespace web_client_task.Controllers
 {
@@ -14,6 +15,8 @@ namespace web_client_task.Controllers
     {
         private const int pageSize = 9;
         static HttpClient client = new HttpClient();
+        private readonly IPhotoService _photoService;
+
         string Url { get => "http://localhost:5249"; }
 
         JsonSerializerOptions options = new JsonSerializerOptions
@@ -21,8 +24,9 @@ namespace web_client_task.Controllers
             PropertyNameCaseInsensitive = true,
         };
 
-        public ProductController()
+        public ProductController(IPhotoService photoService)
         {
+            _photoService = photoService;
             client.DefaultRequestHeaders.Add("Accept", "application/json");
         }
 
@@ -173,12 +177,19 @@ namespace web_client_task.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Guid fridgeId, ProductCreateViewModel viewModel)
         {
+            if (!ModelState.IsValid)
+            {
+                ModelState.AddModelError(string.Empty, "invalid input");
+                return View(viewModel);
+            }
+            var imageResult = await _photoService.AddPhotoAsync(viewModel.Image);
             var request = new ProductCreationDto
             {
                 Name = viewModel.Name,
                 Description = viewModel.Description,
                 DefaultQuantity = viewModel.DefaultQuantity,
-                Quantity = viewModel.Quantity
+                Quantity = viewModel.Quantity,
+                ImagePath = imageResult.Url.ToString()
             };
             var res = await client.PostAsync($"{Url}/api/products/{fridgeId.ToString()}",
                 new StringContent(

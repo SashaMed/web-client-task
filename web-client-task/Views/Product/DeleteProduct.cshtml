@@ -29,7 +29,10 @@
 	<div class="row">
 
 		<div class="col-md-8">
-			@*<img class="img-fluid" src="@Model.item.ImagePath" alt="">*@
+			@if(Model.Product.ImagePath != null)
+			{
+			<img class="img-fluid" src="@Model.Product.ImagePath" alt="">
+			}
 		</div>
 
 		<div class="col-md-4">

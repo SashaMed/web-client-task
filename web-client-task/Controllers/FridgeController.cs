@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json;
 using web_client_task.Models;
 using web_client_task.Models.Dtos;
+using web_client_task.Models.RequestObjects;
 using web_client_task.Models.ResponceObjects;
 using web_client_task.ViewModels;
 using web_client_task.ViewModels.Fridges;
@@ -92,8 +93,9 @@ namespace web_client_task.Controllers
                 new { statusCode = (int)res.StatusCode, message = "Failed to get fridge" });
             }
             var fridgeString = await res.Content.ReadAsStringAsync();
-            var fridge = JsonSerializer.Deserialize<FridgeDto>(fridgeString, options);
-            var responce = new FridgeDetailsViewModel { Fridge = fridge };
+            var fridge = JsonSerializer.Deserialize<GetFridgeDetailsResponce>(fridgeString, options);
+            fridge.Fridge.Products = fridge.Products;
+            var responce = new FridgeDetailsViewModel { Fridge = fridge.Fridge };
             return View(responce);
         }
 
@@ -128,6 +130,57 @@ namespace web_client_task.Controllers
                 PageViewModel = new PageViewModel(serverResponce.ProductsCount, pageNumber, pageSize)                
             };
             return View(responce);
+        }
+
+
+        public async Task<IActionResult> AddProducts(Guid fridgeId, int pageNumber = 1)
+        {
+            var res = await client.GetAsync($"{Url}/api/fridges/{fridgeId.ToString()}/products/outside" +
+                $"?PageNumber={pageNumber.ToString()}&PageSize={pageSize.ToString()}");
+            if (!res.IsSuccessStatusCode)
+            {
+                return RedirectToAction("RequestError", "Home",
+                new { statusCode = (int)res.StatusCode, message = "Failed to get fridge" });
+            }
+            var responceString = await res.Content.ReadAsStringAsync();
+            var serverResponce = JsonSerializer.Deserialize<GetProductsNotInFridgeResponce>(responceString, options);
+            var responce = new FridgeAddProductViewModel
+            {
+                Fridge = serverResponce.Fridge,
+                Products = (List<ProductDto>)serverResponce.Products,
+                PageViewModel = new PageViewModel(serverResponce.ProductsCount,pageNumber,pageSize)
+            };
+            return View(responce);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddProducts(Guid fridgeId, FridgeAddProductViewModel fridgeAddProductViewModel)
+        {
+            var request = CreateAddProductsRequest(fridgeAddProductViewModel);
+            var res = await client.PostAsync($"{Url}/api/fridges/{fridgeId.ToString()}/products", new StringContent(
+                    JsonSerializer.Serialize(request),
+                    Encoding.UTF8, "application/json"));
+                if (!res.IsSuccessStatusCode)
+            {
+                return RedirectToAction("RequestError", "Home",
+                new { statusCode = (int)res.StatusCode, message = "Failed to get fridge" });
+            }
+            return RedirectToAction("Details", "Fridge", new {id = fridgeId});
+        }
+
+        private AddProductsRequest CreateAddProductsRequest(FridgeAddProductViewModel vm)
+        {
+            var quantityes = new List<int>();
+            var guids = new List<Guid>();
+            for (int i = 0; i < vm.CheckBoxes.Count(); i++)
+            {
+                if (vm.CheckBoxes[i])
+                {
+                    quantityes.Add(vm.QuantityList[i]);
+                    guids.Add(vm.InputProducts[i]);
+                }
+            }
+            return new AddProductsRequest { Guids = guids, QuantityList = quantityes };
         }
     }
 }

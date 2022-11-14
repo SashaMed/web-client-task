@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-6 col-lg-5">
-        <form method="post" asp-controller="Product" asp-action="Create" asp-route-fridgeId="@Model.FridgeId">
+        <form method="post" asp-controller="Product" asp-action="Create" asp-route-fridgeId="@Model.FridgeId" enctype="multipart/form-data">
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -49,7 +49,15 @@
 
 
             </p>
+            <div class="form-group">
+                <label asp-for="Image" class="control-label"></label>
+                <input asp-for="Image" type="file" class="form-control form-control-lg" placeholder="Image" />
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
+            <p>
 
+
+            </p>
             <div class="form-group">
                 <input type="submit" value="Create" class="w-100 btn btn-lg btn-primary" />
             </div>
