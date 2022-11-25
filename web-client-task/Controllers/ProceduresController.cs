@@ -7,6 +7,7 @@ using web_client_task.Services;
 using web_client_task.ViewModels.Products;
 using web_client_task.ViewModels;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace web_client_task.Controllers
 {
@@ -14,7 +15,7 @@ namespace web_client_task.Controllers
     {
         static HttpClient client = new HttpClient();
 
-        string Url { get => "http://localhost:5249"; }
+        string Url { get => "https://localhost:44382"; }
 
         JsonSerializerOptions options = new JsonSerializerOptions
         {
@@ -32,7 +33,8 @@ namespace web_client_task.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Call6thTaskMethod()
+		[Authorize]
+		public async Task<IActionResult> Call6thTaskMethod()
         {
             var res = await client.PostAsync($"{Url}/api/procedures/procedure", null);
             if (!res.IsSuccessStatusCode)

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using web_client_task.Models;
@@ -15,7 +17,7 @@ namespace web_client_task.Controllers
     {
         private const int pageSize = 3;
         static HttpClient client = new HttpClient();
-        string Url { get => "http://localhost:5249"; }
+        string Url { get => "https://localhost:44382"; }
 
         JsonSerializerOptions options = new JsonSerializerOptions
         {
@@ -29,7 +31,7 @@ namespace web_client_task.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var res = await client.GetAsync($"{Url}/api/fridges");
+			var res = await client.GetAsync($"{Url}/api/fridges");
             if (!res.IsSuccessStatusCode)
             {
                 return RedirectToAction("RequestError", "Home", 
@@ -45,6 +47,7 @@ namespace web_client_task.Controllers
             return View(responce);
         }
 
+        [Authorize]
         public async Task<IActionResult> Create()
         {
             var res = await client.GetAsync($"{Url}/api/fridges/models");
@@ -65,9 +68,11 @@ namespace web_client_task.Controllers
 
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create(FridgeCreateViewModel viewModel)
         {
-            var request = new FridgeCreationDto
+			AddTokenToRequestHeader();
+			var request = new FridgeCreationDto
             {
                 Name = viewModel.Name,
                 OwnerName = viewModel.Owner,
@@ -78,12 +83,13 @@ namespace web_client_task.Controllers
                     Encoding.UTF8, "application/json"));
             if (!res.IsSuccessStatusCode)
             {
-                ModelState.AddModelError(string.Empty, "Creation failed");
-                return View(viewModel);
-            }
+				return RedirectToAction("RequestError", "Home",
+				new { statusCode = (int)res.StatusCode, message = "Failed to create fridge" });
+			}
             return RedirectToAction("Index", "Fridge");
         }
 
+        [Authorize]
         public async Task<IActionResult> Delete(Guid id)
         {
             var res = await client.GetAsync($"{Url}/api/fridges/{id.ToString()}");
@@ -100,9 +106,11 @@ namespace web_client_task.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> DeletePost(Guid id)
         {
-            var res = await client.DeleteAsync($"{Url}/api/fridges/{id.ToString()}");
+			AddTokenToRequestHeader();
+			var res = await client.DeleteAsync($"{Url}/api/fridges/{id.ToString()}");
             if (!res.IsSuccessStatusCode)
             {
                 return RedirectToAction("RequestError", "Home",
@@ -133,9 +141,11 @@ namespace web_client_task.Controllers
         }
 
 
+        [Authorize]
         public async Task<IActionResult> AddProducts(Guid fridgeId, int pageNumber = 1)
         {
-            var res = await client.GetAsync($"{Url}/api/fridges/{fridgeId.ToString()}/products/outside" +
+
+			var res = await client.GetAsync($"{Url}/api/fridges/{fridgeId.ToString()}/products/outside" +
                 $"?PageNumber={pageNumber.ToString()}&PageSize={pageSize.ToString()}");
             if (!res.IsSuccessStatusCode)
             {
@@ -154,9 +164,12 @@ namespace web_client_task.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddProducts(Guid fridgeId, FridgeAddProductViewModel fridgeAddProductViewModel)
         {
-            var request = CreateAddProductsRequest(fridgeAddProductViewModel);
+            AddTokenToRequestHeader();
+
+			var request = CreateAddProductsRequest(fridgeAddProductViewModel);
             var res = await client.PostAsync($"{Url}/api/fridges/{fridgeId.ToString()}/products", new StringContent(
                     JsonSerializer.Serialize(request),
                     Encoding.UTF8, "application/json"));
@@ -181,6 +194,15 @@ namespace web_client_task.Controllers
                 }
             }
             return new AddProductsRequest { Guids = guids, QuantityList = quantityes };
+        }
+
+        private void AddTokenToRequestHeader()
+        {
+            if (client.DefaultRequestHeaders.Authorization == null)
+            {
+				var token = Request.Cookies["jwtToken"];
+				client.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+			}
         }
     }
 }

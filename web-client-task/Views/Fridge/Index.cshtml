@@ -7,9 +7,10 @@
 }
 
 <h1>Fridges</h1>
-
-<a asp-area="" asp-controller="Fridge" asp-action="Create" class="btn btn-primary my-2">create new fridge</a>
-
+@if (User.Identity.IsAuthenticated)
+{
+	<a asp-area="" asp-controller="Fridge" asp-action="Create" class="btn btn-primary my-2">create new fridge</a>
+}
 <table class="table">
 	<tr>
 		<th>
