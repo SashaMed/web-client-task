@@ -9,6 +9,8 @@ using System.Text.Json;
 using web_client_task.Models;
 using web_client_task.Models.Dtos;
 using web_client_task.ViewModels.Account;
+using Microsoft.AspNetCore.Authorization;
+using System.Net;
 
 namespace web_client_task.Controllers
 {
@@ -116,41 +118,34 @@ namespace web_client_task.Controllers
 			return result;
 		}
 
-
+		[Authorize]
 		public async Task<IActionResult> RefreshToken()
 		{
-			if (User.Identity.IsAuthenticated)
-            {
-                var jtoken = Request.Cookies["jwtToken"];
-                var res = await client.GetAsync($"{Url}/api/authentication/refresh-token/{jtoken}");
-                var Cookies = ExtractCookiesFromResponse(res);
+			var jtoken = Request.Cookies["jwtToken"];
+			var res = await client.GetAsync($"{Url}/api/authentication/refresh-token/{jtoken}");
+			var Cookies = ExtractCookiesFromResponse(res);
 
-                foreach (var item in Cookies)
-                {
-                    HttpContext.Response.Cookies.Append(
-                       item.Key,
-                       item.Value,
-                       new Microsoft.AspNetCore.Http.CookieOptions { IsEssential = true, HttpOnly = true });
-                }
+			foreach (var item in Cookies)
+			{
+				HttpContext.Response.Cookies.Append(
+				   item.Key,
+				   item.Value,
+				   new Microsoft.AspNetCore.Http.CookieOptions { IsEssential = true, HttpOnly = true });
+			}
 
-                var responceString = await res.Content.ReadAsStringAsync();
-                var token = JsonSerializer.Deserialize<JwtToken>(responceString, options);
-                await Authenticate(token.Token);
-                return Ok(token);
-            }
-			return NotFound();
+			var responceString = await res.Content.ReadAsStringAsync();
+			var token = JsonSerializer.Deserialize<JwtToken>(responceString, options);
+			await Authenticate(token.Token);
+			return RedirectToAction("Index", "Home");
 		}
 
 		private async Task Authenticate(string userName)
 		{
-			// создаем один claim
 			var claims = new List<Claim>
 			{
 				new Claim(ClaimsIdentity.DefaultNameClaimType, userName)
 			};
-			// создаем объект ClaimsIdentity
 			ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
-			// установка аутентификационных куки
 			await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
 		}
 	}

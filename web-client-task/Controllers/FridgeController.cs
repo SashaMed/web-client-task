@@ -176,7 +176,7 @@ namespace web_client_task.Controllers
                 if (!res.IsSuccessStatusCode)
             {
                 return RedirectToAction("RequestError", "Home",
-                new { statusCode = (int)res.StatusCode, message = "Failed to get fridge" });
+                new { statusCode = (int)res.StatusCode, message = "Failed to add products" });
             }
             return RedirectToAction("Details", "Fridge", new {id = fridgeId});
         }
