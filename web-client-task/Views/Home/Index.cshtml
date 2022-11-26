@@ -4,5 +4,71 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <p>to client for web api</p>
 </div>
+
+
+
+<body>
+
+    <div class="container">
+        <div class="card-deck mb-3 text-center">
+            <div class="row">
+                <div class="col-sm">
+                    <div class="card mb-4 box-shadow">
+                        <div class="card-header">
+                            <h4 class="my-0 font-weight-normal">Procedures</h4>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mt-3 mb-4">
+                                <li>Call SQL procedures</li>
+                                <li>
+                                    Call procedure from API step 6 
+                                </li>
+                                <li>
+                                    And call other procedures
+                                </li>
+                                <li>
+                                    If i implement them
+                                </li>
+                            </ul>
+                            <a asp-area="" asp-controller="Procedures" asp-action="Index" class="btn btn-lg btn-block btn-primary">Procedures</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="card mb-4 box-shadow">
+                        <div class="card-header">
+                            <h4 class="my-0 font-weight-normal">Fridges</h4>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mt-3 mb-4">
+                                <li>Get all fridges</li>
+                                <li>Create new fridges</li>
+                                <li>Delete fridges</li>
+                                <li>Add/remove products to the fridges</li>
+                            </ul>
+                            <a asp-area="" asp-controller="Fridge" asp-action="Index" class="btn btn-lg btn-block btn-primary">Fridges</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="card mb-4 box-shadow">
+                        <div class="card-header">
+                            <h4 class="my-0 font-weight-normal">Products</h4>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled mt-3 mb-4">
+                                <li>Get all products</li>
+                                <li>Get product details</li>
+                                <li>Update products</li>
+                                <li>Delete products</li>
+                            </ul>
+                            <a asp-area="" asp-controller="Product" asp-action="Index" class="btn btn-lg btn-block btn-primary">Products</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+

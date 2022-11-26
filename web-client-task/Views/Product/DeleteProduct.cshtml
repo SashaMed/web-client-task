@@ -1,0 +1,46 @@
+﻿@using web_client_task.ViewModels.Products
+@model ProductDeleteViewModel
+
+@{
+	ViewData["Title"] = "Product delete";
+}
+
+<section class="jumbotron text-center">
+	<div class="container">
+		<h1>Delete this product?</h1>
+	</div>
+</section>
+
+<section class="jumbotron text-center">
+	<div class="container">
+		<p>
+			<form method="post" asp-controller="Product" asp-action="DeleteProductPost" asp-route-productId="@Model.Product.Id">
+				<input type="submit" value="Yes" class="btn btn-danger my-2" />
+				<a asp-area="" asp-controller="Product" asp-action="Index" class="btn btn-primary my-2">No</a>
+			</form>
+		</p>
+	</div>
+</section>
+
+<div class="container">
+	<h1 class="my-4">
+		@Model.Product.Name
+	</h1>
+	<div class="row">
+
+		<div class="col-md-8">
+			@if(Model.Product.ImagePath != null)
+			{
+			<img class="img-fluid" src="@Model.Product.ImagePath" alt="">
+			}
+		</div>
+
+		<div class="col-md-4">
+			<h3 class="my-3">Description</h3>
+			<p>@Model.Product.Description</p>
+			<h3 class="my-3">Default Quantity</h3>
+			<p>@Model.Product.DefaultQuantity</p>
+
+		</div>
+	</div>
+</div>

@@ -1,0 +1,69 @@
+﻿@using web_client_task.ViewModels.Fridges
+@model FridgeCreateViewModel;
+
+@{
+    ViewData["Title"] = "Create fridge";
+}
+
+<h1>Create fridge</h1>
+
+<hr />
+<div class="row">
+    <div class="col-6 col-lg-5">
+        <form method="post">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" placeholder="fridge name" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Owner" class="control-label"></label>
+                <input asp-for="Owner" class="form-control" placeholder="owner name" />
+                <span asp-validation-for="Owner" class="text-danger"></span>
+            </div>
+
+            @foreach (var item in Model.FridgeModels)
+            {
+                <div class="d-block my-3">
+                    <div class="custom-control custom-radio">
+                        @*<input asp-for="FridgeStates[i]" id="credit" name="paymentMethod" type="radio" class="custom-control-input" checked required>*@
+                        <input type="radio" asp-for="Guid" value="@item.Id.ToString()" /> Model<br />
+                        <label class="custom-control-label" for="credit">
+                            <div class="row">
+                                <div class="col">
+                                    <h7 class="jumbotron-heading">Fridge Model Name</h7>
+                                    <p class="lead text-muted">@item.Name</p>
+                                </div>
+                                <div class="col">
+                                    <h7 class="jumbotron-heading">Fridge Model Year</h7>
+                                    <p class="lead text-muted">@item.Year</p>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            }
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="w-100 btn btn-lg btn-primary" />
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script type="text/javascript">
+        function showOrHide(bloggood, cat) {
+            bloggood = document.getElementById(bloggood);
+            cat = document.getElementById(cat);
+            if (bloggood.checked) cat.style.display = "block";
+            else cat.style.display = "none";
+        }
+    </script>
+}

@@ -1,0 +1,26 @@
+﻿@using web_client_task.ViewModels.Products
+@model ProductDetailsViewModel
+@{
+	ViewData["Title"] = "Product details";
+}
+
+
+<div class="container">
+	<h1 class="my-4">
+		@Model.Product.Name
+	</h1>
+	<div class="row">
+
+		<div class="col-md-8">
+			<img class="img-fluid" src="@Model.Product.ImagePath" alt="">
+		</div>
+
+		<div class="col-md-4">
+			<h3 class="my-3">Description</h3>
+			<p>@Model.Product.Description</p>
+			<h3 class="my-3">Default Quantity</h3>
+			<p>@Model.Product.DefaultQuantity</p>
+
+			</div>
+		</div>
+		</div>

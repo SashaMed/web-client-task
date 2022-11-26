@@ -1,0 +1,140 @@
+﻿@using web_client_task.ViewModels.Fridges
+@model FridgeAddProductViewModel;
+
+@{
+    ViewData["Title"] = "Add product";
+}
+
+<main>
+    <form method="post" asp-controller="Fridge" asp-action="AddProducts" asp-route-fridgeId="@Model.Fridge.Id">
+        <h1>Add product</h1>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <h5 class="jumbotron-heading">Fridge Name</h5>
+                    <p class="lead text-muted">@Model.Fridge.Name</p>
+                </div>
+                <div class="col">
+                    <h5 class="jumbotron-heading">Owner Name</h5>
+                    <p class="lead text-muted">@Model.Fridge.OwnerName</p>
+                </div>
+                <div class="col">
+                    <h5 class="jumbotron-heading">Fridge Model Name</h5>
+                    <p class="lead text-muted">@Model.Fridge.FridgeModel.Name</p>
+                </div>
+                <div class="col">
+                    <h5 class="jumbotron-heading">Fridge Model Year</h5>
+                    <p class="lead text-muted">@Model.Fridge.FridgeModel.Year</p>
+                </div>
+            </div>
+
+            <p>
+
+            </p>
+            <section class="jumbotron text-center">
+                <div class="container">
+                    <p>
+
+
+                        <input type="submit" value="Add selected products" class="btn btn-primary" />
+
+                        <a asp-area="" asp-controller="Fridge" asp-action="Details" asp-route-id="@Model.Fridge.Id" class="btn btn-secondary my-2">Back to details</a>
+
+                    </p>
+                </div>
+            </section>
+        </div>
+        @for (int i = 0; i < Model.Products.Count(); i++)
+        {
+             <input asp-for="@Model.InputProducts[i]" type="hidden" value="@Model.Products[i].Id">
+            <div class="card mb-4 box-shadow">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col col-lg-2">
+                            <div class="form-group">
+
+                                <h6 class="jumbotron-heading"> <label class="control-label">Click to add</label> </h6>
+                                <input asp-for="CheckBoxes[i]" type="checkbox" />
+                                @*                        <span asp-validation-for="Name" class="text-danger"></span>*@
+                            </div>
+                            <p>
+
+
+                            </p>
+                            <div class="col col-lg-2">
+                                <div class="form-group">
+                                    <h6 class="jumbotron-heading">
+                                        <label class="control-label">Quantity</label>
+                                    </h6>
+                                    <input asp-for="QuantityList[i]" type="number" value="0" placeholder="Quantity">
+                                    @*                        <span asp-validation-for="Name" class="text-danger"></span>*@
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-sm">
+                            <div class="col-md-4">
+                                @if (Model.Products[i].ImagePath != null)
+                                {
+                                    <img class="card-img-top" src="@Model.Products[i].ImagePath" width="180" height="180" alt="Card image cap">
+                                }
+                                else
+                                {
+                                    <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=Thumbnail" alt="Card image cap">
+                                }
+                            </div>
+                        </div>
+
+
+                        <div class="col-sm">
+                            <div class="row">
+                                <div class="col">
+                                    <h6 class="jumbotron-heading">Product Name</h6>
+                                    <p class="card-text">@Html.DisplayFor(modelItem => Model.Products[i].Name)</p>
+                                </div>
+                                <div class="col">
+                                    <h6 class="jumbotron-heading">Default Quantity</h6>
+                                    <p class="card-text">@Html.DisplayFor(modelItem => Model.Products[i].DefaultQuantity)</p>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <h6 class="jumbotron-heading">Product Description</h6>
+                                    <p class="card-text">@Html.DisplayFor(modelItem => Model.Products[i].Description)</p>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        }
+
+        @if (Model.PageViewModel.HasPreviousPage)
+        {
+            <a asp-action="AddProducts"
+           asp-route-fridgeId="@Model.Fridge.Id"
+           asp-route-pageNumber="@(Model.PageViewModel.PageNumber - 1)"
+           class="btn btn-outline-dark">
+                <i class="glyphicon glyphicon-chevron-left"></i>
+                Previous
+            </a>
+        }
+        @if (Model.PageViewModel.HasNextPage)
+        {
+            <a asp-action="AddProducts"
+           asp-route-fridgeId="@Model.Fridge.Id"
+           asp-route-pageNumber="@(Model.PageViewModel.PageNumber + 1)"
+           class="btn btn-outline-dark">
+                Next
+                <i class="glyphicon glyphicon-chevron-right"></i>
+            </a>
+        }
+    </form>
+</main>
